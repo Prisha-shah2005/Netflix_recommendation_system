@@ -1,3 +1,13 @@
+---
+title: Netflix Recommendation System
+emoji: 🎬
+colorFrom: red
+colorTo: black
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Netflix Recommendation System - End-to-End Hybrid Engine
 An industry-standard Machine Learning and Full-Stack Engineering Capstone Project.
 

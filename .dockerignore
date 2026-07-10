@@ -1,0 +1,6 @@
+.git
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+notebooks/
+.DS_Store
