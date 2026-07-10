@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Recommendation System</title>
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Style link -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="logo">
+            <span class="logo-red">NETFLIX</span>
+            <span class="logo-sub">RECOMMENDER</span>
+        </div>
+        <div class="user-selector-container">
+            <label for="user-select"><i class="fa-solid fa-user-circle"></i> DEMO PROFILE:</label>
+            <select id="user-select" class="user-dropdown">
+                <option value="" disabled selected>Loading profiles...</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Layout -->
+    <main class="dashboard-container">
+        
+        <!-- Welcome / Cold Start State -->
+        <section id="welcome-hero" class="welcome-hero">
+            <div class="hero-content">
+                <h1>Personalized Recommendations Await</h1>
+                <p>Select a user profile from the dropdown above to inspect search, watch, and rating patterns, and receive instant hybrid recommendations.</p>
+            </div>
+        </section>
+
+        <!-- User Profile Insights Section (Hidden initially) -->
+        <section id="profile-insights" class="profile-insights-section hidden">
+            <div class="section-title">
+                <h2>User Profile Dashboard</h2>
+                <span class="user-id-badge" id="active-user-badge">user_id</span>
+            </div>
+            
+            <!-- Statistics Cards Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-hours">0.0</span>
+                        <span class="stat-label">Hours Watched</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-film"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-watches">0</span>
+                        <span class="stat-label">Watch Sessions</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-searches">0</span>
+                        <span class="stat-label">Queries Logged</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-thumbs-up"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-ratings">0</span>
+                        <span class="stat-label">Likes / Dislikes</span>
+                    </div>
+                </div>
+                <div class="stat-card spotlight">
+                    <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-genre">N/A</span>
+                        <span class="stat-label">Favorite Genre</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Behavior & History Tabs -->
+            <div class="history-tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="watch-history-tab">
+                        <i class="fa-solid fa-circle-play"></i> Watch History
+                    </button>
+                    <button class="tab-btn" data-tab="search-history-tab">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Search History
+                    </button>
+                    <button class="tab-btn" data-tab="ratings-history-tab">
+                        <i class="fa-solid fa-star-half-stroke"></i> Like / Dislike List
+                    </button>
+                </div>
+                
+                <div class="tabs-content-container">
+                    <!-- Watch History Tab -->
+                    <div id="watch-history-tab" class="tab-content active">
+                        <div class="watch-grid" id="watch-history-grid">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Search History Tab -->
+                    <div id="search-history-tab" class="tab-content">
+                        <div class="search-logs-table-wrapper">
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Search Query</th>
+                                        <th>Date</th>
+                                        <th>Results Returned</th>
+                                        <th>Clicked Position</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="search-history-table-body">
+                                    <!-- Injected dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Ratings History Tab -->
+                    <div id="ratings-history-tab" class="tab-content">
+                        <div class="ratings-grid" id="ratings-history-grid">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommendation Section (Hidden initially) -->
+        <section id="recommendation-section" class="recommendation-section hidden">
+            <div class="section-header-recs">
+                <h2>Recommended For You</h2>
+                <p>Personalized hybrid rankings generated from Content Metadata similarities and SVD Latent Interactions.</p>
+            </div>
+            
+            <div class="recs-grid" id="recommendations-grid">
+                <!-- Injected dynamically -->
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- Modal Dialog for Movie Details & "More Like This" -->
+    <div id="movie-detail-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="close-modal-btn" id="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="modal-body" id="modal-movie-body">
+                <!-- Injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script file -->
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
