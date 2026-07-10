@@ -2,7 +2,7 @@
 title: Netflix Recommendation System
 emoji: 🎬
 colorFrom: red
-colorTo: black
+colorTo: red
 sdk: docker
 app_port: 7860
 pinned: false
