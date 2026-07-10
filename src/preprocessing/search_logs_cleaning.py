@@ -77,6 +77,7 @@ def clean_search_logs(raw_path, cleaned_path, current_date="2026-07-10"):
     return df
 
 if __name__ == "__main__":
-    raw_csv = r"d:\project\Netflix Recommendation System\data\raw\search_logs.csv"
-    cleaned_csv = r"d:\project\Netflix Recommendation System\data\cleaned\search_logs.csv"
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    raw_csv = os.path.join(base_dir, "data", "raw", "search_logs.csv")
+    cleaned_csv = os.path.join(base_dir, "data", "cleaned", "search_logs.csv")
     clean_search_logs(raw_csv, cleaned_csv)

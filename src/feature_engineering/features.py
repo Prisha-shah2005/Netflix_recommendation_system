@@ -17,7 +17,10 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 class FeatureEngineer:
-    def __init__(self, cleaned_dir=r"d:\project\Netflix Recommendation System\data\cleaned"):
+    def __init__(self, cleaned_dir=None):
+        if cleaned_dir is None:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            cleaned_dir = os.path.join(base_dir, "data", "cleaned")
         self.cleaned_dir = cleaned_dir
         self.movies_path = os.path.join(cleaned_dir, "movies.csv")
         self.watch_path = os.path.join(cleaned_dir, "watch_history.csv")

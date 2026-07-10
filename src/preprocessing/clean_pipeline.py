@@ -28,7 +28,7 @@ def run_pipeline():
     print("==================================================")
     
     # Define file paths
-    base_dir = r"d:\project\Netflix Recommendation System"
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     raw_dir = os.path.join(base_dir, "data", "raw")
     cleaned_dir = os.path.join(base_dir, "data", "cleaned")
     

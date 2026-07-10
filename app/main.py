@@ -28,7 +28,7 @@ from src.recommendation.hybrid_model import HybridRecommender
 app = FastAPI(title="Netflix Recommendation System API", version="1.0.0")
 
 # Paths
-base_dir = r"d:\project\Netflix Recommendation System"
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 cleaned_dir = os.path.join(base_dir, "data", "cleaned")
 static_dir = os.path.join(base_dir, "app", "static")
 templates_dir = os.path.join(base_dir, "app", "templates")

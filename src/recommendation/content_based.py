@@ -16,7 +16,10 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 class ContentBasedRecommender:
-    def __init__(self, cleaned_dir=r"d:\project\Netflix Recommendation System\data\cleaned"):
+    def __init__(self, cleaned_dir=None):
+        if cleaned_dir is None:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            cleaned_dir = os.path.join(base_dir, "data", "cleaned")
         self.cleaned_dir = cleaned_dir
         self.movies_features_path = os.path.join(cleaned_dir, "engineered_movie_features.csv")
         self.interactions_path = os.path.join(cleaned_dir, "engineered_interactions.csv")

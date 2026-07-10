@@ -21,7 +21,10 @@ from src.recommendation.content_based import ContentBasedRecommender
 from src.recommendation.collaborative_filtering import CollaborativeFilteringRecommender
 
 class HybridRecommender:
-    def __init__(self, cleaned_dir=r"d:\project\Netflix Recommendation System\data\cleaned", num_factors=20, default_alpha=0.5):
+    def __init__(self, cleaned_dir=None, num_factors=20, default_alpha=0.5):
+        if cleaned_dir is None:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            cleaned_dir = os.path.join(base_dir, "data", "cleaned")
         self.cleaned_dir = cleaned_dir
         self.default_alpha = default_alpha
         

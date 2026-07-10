@@ -100,6 +100,7 @@ def clean_reviews(raw_path, cleaned_path, current_date="2026-07-10"):
     return df
 
 if __name__ == "__main__":
-    raw_csv = r"d:\project\Netflix Recommendation System\data\raw\reviews.csv"
-    cleaned_csv = r"d:\project\Netflix Recommendation System\data\cleaned\reviews.csv"
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    raw_csv = os.path.join(base_dir, "data", "raw", "reviews.csv")
+    cleaned_csv = os.path.join(base_dir, "data", "cleaned", "reviews.csv")
     clean_reviews(raw_csv, cleaned_csv)

@@ -25,7 +25,10 @@ from scipy.sparse.linalg import svds
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 class RecommenderEvaluator:
-    def __init__(self, cleaned_dir=r"d:\project\Netflix Recommendation System\data\cleaned"):
+    def __init__(self, cleaned_dir=None):
+        if cleaned_dir is None:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            cleaned_dir = os.path.join(base_dir, "data", "cleaned")
         self.cleaned_dir = cleaned_dir
         self.interactions_df = pd.read_csv(os.path.join(cleaned_dir, "engineered_interactions.csv"))
         self.movies_df = pd.read_csv(os.path.join(cleaned_dir, "engineered_movie_features.csv"))

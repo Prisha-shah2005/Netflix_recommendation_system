@@ -134,7 +134,8 @@ def clean_watch_history(raw_path, cleaned_path, movies_clean_path, current_date=
     return df
 
 if __name__ == "__main__":
-    raw_csv = r"d:\project\Netflix Recommendation System\data\raw\watch_history.csv"
-    cleaned_csv = r"d:\project\Netflix Recommendation System\data\cleaned\watch_history.csv"
-    movies_clean_csv = r"d:\project\Netflix Recommendation System\data\cleaned\movies.csv"
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    raw_csv = os.path.join(base_dir, "data", "raw", "watch_history.csv")
+    cleaned_csv = os.path.join(base_dir, "data", "cleaned", "watch_history.csv")
+    movies_clean_csv = os.path.join(base_dir, "data", "cleaned", "movies.csv")
     clean_watch_history(raw_csv, cleaned_csv, movies_clean_csv)

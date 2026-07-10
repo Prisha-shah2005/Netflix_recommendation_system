@@ -16,7 +16,10 @@ import numpy as np
 from scipy.sparse.linalg import svds
 
 class CollaborativeFilteringRecommender:
-    def __init__(self, cleaned_dir=r"d:\project\Netflix Recommendation System\data\cleaned", num_factors=20):
+    def __init__(self, cleaned_dir=None, num_factors=20):
+        if cleaned_dir is None:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            cleaned_dir = os.path.join(base_dir, "data", "cleaned")
         self.cleaned_dir = cleaned_dir
         self.matrix_path = os.path.join(cleaned_dir, "interaction_matrix.csv")
         self.interactions_path = os.path.join(cleaned_dir, "engineered_interactions.csv")
