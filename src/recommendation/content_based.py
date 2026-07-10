@@ -14,6 +14,7 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+from src.utils.data_loader import load_cached_csv
 
 class ContentBasedRecommender:
     def __init__(self, cleaned_dir=None):
@@ -37,8 +38,8 @@ class ContentBasedRecommender:
         Load features and pre-compute similarities.
         """
         print("Fitting Content-Based Recommender...")
-        self.movie_features_df = pd.read_csv(self.movies_features_path)
-        self.interactions_df = pd.read_csv(self.interactions_path)
+        self.movie_features_df = load_cached_csv(self.movies_features_path)
+        self.interactions_df = load_cached_csv(self.interactions_path)
         
         self.movie_ids = self.movie_features_df["movie_id"].values
         self.movie_id_to_idx = {mid: idx for idx, mid in enumerate(self.movie_ids)}

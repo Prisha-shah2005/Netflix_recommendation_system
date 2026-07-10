@@ -14,6 +14,7 @@ import os
 import pandas as pd
 import numpy as np
 from scipy.sparse.linalg import svds
+from src.utils.data_loader import load_cached_csv
 
 class CollaborativeFilteringRecommender:
     def __init__(self, cleaned_dir=None, num_factors=20):
@@ -40,9 +41,9 @@ class CollaborativeFilteringRecommender:
         Load interaction matrix, apply SVD, and compute predicted ratings.
         """
         print("Fitting Collaborative Filtering Recommender via SVD...")
-        self.interaction_matrix_df = pd.read_csv(self.matrix_path, index_col="user_id")
-        self.interactions_df = pd.read_csv(self.interactions_path)
-        self.movies_df = pd.read_csv(self.movies_path)
+        self.interaction_matrix_df = load_cached_csv(self.matrix_path, index_col="user_id")
+        self.interactions_df = load_cached_csv(self.interactions_path)
+        self.movies_df = load_cached_csv(self.movies_path)
         
         self.user_ids = self.interaction_matrix_df.index.values
         self.movie_ids = self.interaction_matrix_df.columns.values
@@ -50,39 +51,30 @@ class CollaborativeFilteringRecommender:
         # Convert to numpy matrix
         R = self.interaction_matrix_df.values
         
-        # Calculate user rating means (only for non-zero interactions to avoid biasing towards zero)
-        # Note: A simple standard way in SVD is to compute the mean of each user's active ratings
+        # Compute user ratings mean vectorially
+        non_zero_counts = np.sum(R > 0.0, axis=1)
+        ratings_sum = np.sum(R, axis=1)
         user_ratings_mean = np.zeros(R.shape[0])
-        for i in range(R.shape[0]):
-            user_row = R[i, :]
-            active_ratings = user_row[user_row > 0.0]
-            if len(active_ratings) > 0:
-                user_ratings_mean[i] = np.mean(active_ratings)
-            else:
-                user_ratings_mean[i] = 0.0
+        valid_users = non_zero_counts > 0
+        user_ratings_mean[valid_users] = ratings_sum[valid_users] / non_zero_counts[valid_users]
                 
-        # De-mean the rating matrix (subtract user mean from all non-zero ratings)
+        # Vectorized de-meaning of the rating matrix
+        mask = R > 0.0
         R_demeaned = np.zeros(R.shape)
-        for i in range(R.shape[0]):
-            for j in range(R.shape[1]):
-                if R[i, j] > 0.0:
-                    R_demeaned[i, j] = R[i, j] - user_ratings_mean[i]
+        R_demeaned[mask] = R[mask] - user_ratings_mean[np.where(mask)[0]]
                     
         # Perform SVD (Singular Value Decomposition)
-        # We find the top k (num_factors) singular values
-        # If k is larger than or equal to matrix dimensions, handle it
         k = min(self.num_factors, min(R_demeaned.shape) - 1)
         U, sigma, Vt = svds(R_demeaned, k=k)
         
         # Convert sigma to a diagonal matrix
         sigma = np.diag(sigma)
         
-        # Reconstruct the ratings matrix and add user means back
+        # Reconstruct the ratings matrix
         all_predicted_ratings = np.dot(np.dot(U, sigma), Vt)
         
-        # Add user rating means back
-        for i in range(R.shape[0]):
-            all_predicted_ratings[i, :] = all_predicted_ratings[i, :] + user_ratings_mean[i]
+        # Vectorized adding user rating means back
+        all_predicted_ratings = all_predicted_ratings + user_ratings_mean.reshape(-1, 1)
             
         # Clip predicted ratings between [0, 1.2] to match interaction score range
         all_predicted_ratings = np.clip(all_predicted_ratings, 0.0, 1.2)
@@ -93,6 +85,8 @@ class CollaborativeFilteringRecommender:
             index=self.user_ids, 
             columns=self.movie_ids
         )
+        # Release the raw interaction matrix DataFrame from memory since it's no longer needed
+        self.interaction_matrix_df = None
         print(f"Collaborative Filtering Recommender SVD finished. Latent factors: {k}")
         
     def predict_score(self, user_id, movie_id):

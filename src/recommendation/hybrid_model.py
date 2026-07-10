@@ -19,6 +19,7 @@ import pandas as pd
 import numpy as np
 from src.recommendation.content_based import ContentBasedRecommender
 from src.recommendation.collaborative_filtering import CollaborativeFilteringRecommender
+from src.utils.data_loader import load_cached_csv
 
 class HybridRecommender:
     def __init__(self, cleaned_dir=None, num_factors=20, default_alpha=0.5):
@@ -44,9 +45,9 @@ class HybridRecommender:
         self.content_model.fit()
         self.collaborative_model.fit()
         
-        self.movies_df = pd.read_csv(os.path.join(self.cleaned_dir, "movies.csv"))
-        self.interactions_df = pd.read_csv(os.path.join(self.cleaned_dir, "engineered_interactions.csv"))
-        self.user_features_df = pd.read_csv(os.path.join(self.cleaned_dir, "engineered_user_features.csv"))
+        self.movies_df = load_cached_csv(os.path.join(self.cleaned_dir, "movies.csv"))
+        self.interactions_df = load_cached_csv(os.path.join(self.cleaned_dir, "engineered_interactions.csv"))
+        self.user_features_df = load_cached_csv(os.path.join(self.cleaned_dir, "engineered_user_features.csv"))
         print("Hybrid Recommendation System successfully fitted and ready.")
         
     def recommend(self, user_id, top_n=10, exclude_watched=True):

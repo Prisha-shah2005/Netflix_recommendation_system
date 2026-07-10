@@ -24,6 +24,7 @@ from starlette.requests import Request
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.recommendation.hybrid_model import HybridRecommender
+from src.utils.data_loader import load_cached_csv
 
 app = FastAPI(title="Netflix Recommendation System API", version="1.0.0")
 
@@ -55,11 +56,11 @@ def startup_event():
     print("Initializing backend, loading datasets, and fitting hybrid model...")
     
     # Load cleaned files
-    movies_df = pd.read_csv(os.path.join(cleaned_dir, "movies.csv"))
-    watch_df = pd.read_csv(os.path.join(cleaned_dir, "watch_history.csv"))
-    search_df = pd.read_csv(os.path.join(cleaned_dir, "search_logs.csv"))
-    reviews_df = pd.read_csv(os.path.join(cleaned_dir, "reviews.csv"))
-    user_features_df = pd.read_csv(os.path.join(cleaned_dir, "engineered_user_features.csv"))
+    movies_df = load_cached_csv(os.path.join(cleaned_dir, "movies.csv"))
+    watch_df = load_cached_csv(os.path.join(cleaned_dir, "watch_history.csv"))
+    search_df = load_cached_csv(os.path.join(cleaned_dir, "search_logs.csv"))
+    reviews_df = load_cached_csv(os.path.join(cleaned_dir, "reviews.csv"))
+    user_features_df = load_cached_csv(os.path.join(cleaned_dir, "engineered_user_features.csv"))
     
     # Instantiate and fit recommender
     recommender = HybridRecommender(cleaned_dir=cleaned_dir)
