@@ -41,9 +41,16 @@ class CollaborativeFilteringRecommender:
         Load interaction matrix, apply SVD, and compute predicted ratings.
         """
         print("Fitting Collaborative Filtering Recommender via SVD...")
-        self.interaction_matrix_df = load_cached_csv(self.matrix_path, index_col="user_id")
         self.interactions_df = load_cached_csv(self.interactions_path)
         self.movies_df = load_cached_csv(self.movies_path)
+        
+        # Pivot the smaller interactions dataframe to construct the interaction matrix in-memory,
+        # which saves memory and avoids MemoryErrors on resource-constrained startup.
+        self.interaction_matrix_df = self.interactions_df.pivot(
+            index="user_id",
+            columns="movie_id",
+            values="interaction_score"
+        ).fillna(0.0)
         
         self.user_ids = self.interaction_matrix_df.index.values
         self.movie_ids = self.interaction_matrix_df.columns.values
